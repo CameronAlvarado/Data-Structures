@@ -1,5 +1,5 @@
 from doubly_linked_list import DoublyLinkedList
-from doubly_linked_list import ListNode
+# from doubly_linked_list import ListNode
 
 
 class LRUCache:
@@ -12,14 +12,10 @@ class LRUCache:
     """
 
     def __init__(self, limit=10):
-        self.storage = DoublyLinkedList()
-        self.cache = {}  # Has key / value pairs
-
-        self.head = None
-        self.tail = None
-
         self.limit = limit
-
+        self.size = 0
+        self.storage = DoublyLinkedList()
+        self.dictionary = {}
     """
     Retrieves the value associated with the given key. Also
     needs to move the key-value pair to the end of the order
@@ -29,18 +25,15 @@ class LRUCache:
     """
 
     def get(self, key):
-        if key in self.cache:
-            node = self.cache[key]
-            # node.value = key
-            # self.storage.move_to_front(node)
-            return
-        if self.size == self.limit:
-            self.storage.remove_from_tail()
-            self.size -= 1
-            self.storage.add_to_head((key, value))
-        self.cache[key] = self.storage.head
-        self.size += 1
-
+        # Pull value out of the Dict using the key
+        if key in self.dictionary:
+            node = self.dictionary[key]
+            self.storage.move_to_front(node)
+            # return its value, it's a tuple
+            # with a key and a value, so return the value from the node
+            return node.value[1]
+        else:  # if it equal's None then return None
+            return None
     """
     Adds the given key-value pair to the cache. The newly-
     added pair should be considered the most-recently used
@@ -53,9 +46,28 @@ class LRUCache:
     """
 
     def set(self, key, value):
-        if key in self.cache:
-            self.cache[key] = value
-
-        else:
-            self.cache[key] = value
-            node = self.storage.add_to_head(value)
+        # if key already exists in cache, want to overwrite value.
+        if key in self.dictionary:
+            # update dict
+            node = self.dictionary[key]
+            # use tuple to return both key and it's value.
+            # .value ties the value in the linked list
+            # to the tuple we are storing in the dictionary
+            node.value = (key, value)
+            # now mark as most recently used, put in the head of the DLL
+            self.storage.move_to_front(node)
+            # if get to this point, nothing else matters, leave function
+            return
+        # If the cache is already at max capacity, oldest entry needs to be removed.
+        if self.size == self.limit:
+            # remove the oldest:
+            # remove it from the DLL
+            # remove it from the dict
+            del self.dictionary[self.storage.tail.value[0]]
+            self.storage.remove_from_tail()
+            # changes the size of the list after deleting last entry
+            self.size -= 1
+        # Add a pair to the cache - add to dict and add it to nodes/DLL
+        self.storage.add_to_head((key, value))
+        self.dictionary[key] = self.storage.head
+        self.size += 1  # add to the size of the list
