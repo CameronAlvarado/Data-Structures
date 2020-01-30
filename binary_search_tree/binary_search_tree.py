@@ -1,7 +1,6 @@
-import sys
-sys.path.append('../queue_and_stack')
-from dll_queue import Queue
 from dll_stack import Stack
+from dll_queue import Queue
+import sys
 
 
 class BinarySearchTree:
@@ -11,27 +10,51 @@ class BinarySearchTree:
         self.right = None
 
     # Insert the given value into the tree
-    def insert(self, value):
-        pass
+    def insert(self, value):  # MVP
+        if value < self.value:
+            if self.left is None:
+                self.left = BinarySearchTree(value)
+            else:
+                # Recursive
+                self.left.insert(value)
+        else:
+            if self.right is None:
+                self.right = BinarySearchTree(value)
+            else:
+                # Recursive
+                self.right.insert(value)
 
     # Return True if the tree contains the value
     # False if it does not
-    def contains(self, target):
+    def contains(self, target):  # MVP
+        if target is not self.value:
+            if target is not self.left:
+                new_value = self.left
+                if self.contains(new_value) is False:
+                    return False
+            if target is not self.right:
+                new_value = self.right
+                if self.contains(new_value) is False:
+                    return False
+            else:
+                return True
+        else:
+            return True
+
+        # Return the maximum value found in the tree
+
+    def get_max(self):  # MVP
         pass
 
-    # Return the maximum value found in the tree
-    def get_max(self):
+        # Call the function `cb` on the value of each node
+        # You may use a recursive or iterative approach
+    def for_each(self, cb):  # MVP
         pass
 
-    # Call the function `cb` on the value of each node
-    # You may use a recursive or iterative approach
-    def for_each(self, cb):
-        pass
+        # DAY 2 Project -----------------------
 
-    # DAY 2 Project -----------------------
-
-    # Print all the values in order from low to high
-    # Hint:  Use a recursive, depth first traversal
+        # Print all the values in order from low to high
+        # Hint:  Use a recursive, depth first traversal
     def in_order_print(self, node):
         pass
 

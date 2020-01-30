@@ -28,6 +28,7 @@ class LRUCache:
         # Pull value out of the Dict using the key
         if key in self.dictionary:
             node = self.dictionary[key]
+            # Move to node.value to head of list.
             self.storage.move_to_front(node)
             # return its value, it's a tuple
             # with a key and a value, so return the value from the node
@@ -61,9 +62,9 @@ class LRUCache:
         # If the cache is already at max capacity, oldest entry needs to be removed.
         if self.size == self.limit:
             # remove the oldest:
-            # remove it from the DLL
             # remove it from the dict
             del self.dictionary[self.storage.tail.value[0]]
+            # remove it from the DLL
             self.storage.remove_from_tail()
             # changes the size of the list after deleting last entry
             self.size -= 1
